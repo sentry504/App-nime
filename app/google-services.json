@@ -1,0 +1,41 @@
+{
+  "project_info": {
+    "project_number": "897790323509",
+    "firebase_url": "https://app-nime-default-rtdb.firebaseio.com",
+    "project_id": "app-nime",
+    "storage_bucket": "app-nime.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:897790323509:android:b56fed2ab1285a36a67a7c",
+        "android_client_info": {
+          "package_name": "com.sentry504.scraperprueba"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "897790323509-p1cv7tn5ohicbhfngd20viistfuvccdn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAENdlX6JwqsrETJB4OYPP1FRuk4Kq0G0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "897790323509-p1cv7tn5ohicbhfngd20viistfuvccdn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-1883323185290636~4353204593"
+    }
+  ],
+  "configuration_version": "1"
+}

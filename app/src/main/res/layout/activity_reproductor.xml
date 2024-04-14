@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ReproductorActivity">
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/adViewBottom">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <WebView
+                android:id="@+id/webView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center">
+
+            </WebView>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </FrameLayout>
+
+    <!-- ID_BANNER_PRUEBAS = "ca-app-pub-3940256099942544/6300978111" -->
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adViewBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="ca-app-pub-3940256099942544/6300978111"/>
+    <!--app:adUnitId="ca-app-pub-1883323185290636/4968298178"-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="#010D26"
+        android:gravity="fill_vertical">
+
+        <ImageButton
+            android:id="@+id/imageButtonPrevio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            app:srcCompat="@drawable/baseline_navigate_before_24" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adViewTop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/imageButtonSiguiente"
+            android:layout_toEndOf="@id/imageButtonPrevio"
+            app:adSize="SMART_BANNER"
+            app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+        <!--app:adUnitId="ca-app-pub-1883323185290636/1722347415"-->
+
+        <ImageButton
+            android:id="@+id/imageButtonSiguiente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="0dp"
+            app:srcCompat="@drawable/baseline_navigate_next_24" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

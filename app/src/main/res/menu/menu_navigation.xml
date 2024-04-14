@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuItemRecientes"
+        android:icon="@drawable/baseline_new_releases_24"
+        android:title="@string/release_nav_button" />
+    <item
+        android:id="@+id/menuItemLibrary"
+        android:icon="@drawable/baseline_manage_search_24"
+        android:title="@string/search_nav_button" />
+    <item
+        android:id="@+id/menuItemMyList"
+        android:icon="@drawable/baseline_notes_24"
+        android:title="@string/my_list_nav_button" />
+    <item
+        android:id="@+id/menuItemAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/baseline_account_circle_24"
+        android:title="@string/account_nav_button" />
+
+</menu>
