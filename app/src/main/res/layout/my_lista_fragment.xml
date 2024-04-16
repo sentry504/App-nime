@@ -1,24 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".collectionsActivity">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_item"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/confirmation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:layout_alignParentBottom="false"
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp">
 
         <!-- …Toolbar, other layouts, other elements… -->
 
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/searchViewMyList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="2dp"
+            android:layout_weight="1"
+            android:hint="Buscar"
+            android:iconifiedByDefault="true"
+            android:layoutDirection="rtl">
+
+        </androidx.appcompat.widget.SearchView>
+
+        <ImageView
+            android:id="@+id/imgBtnFiltersShow"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:scaleType="fitCenter"
+            android:src="@drawable/baseline_arrow_drop_down_circle_24" />
+
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lyFilters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/confirmation"
+        android:background="#A6A6A6"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/imgBtnFilterName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/btn_star" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lyFilters" />
+
 </RelativeLayout>

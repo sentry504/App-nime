@@ -40,9 +40,8 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
-        android:iconifiedByDefault="false"
-        android:layoutDirection="rtl">
-    </androidx.appcompat.widget.SearchView>
+        android:iconifiedByDefault="true"
+        android:layoutDirection="rtl"></androidx.appcompat.widget.SearchView>
 
     <ProgressBar
         android:id="@+id/progressBar"

@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,6 @@ import com.sentry504.scraperprueba.libraryepisodes.LibraryAdapterPagination;
 import com.sentry504.scraperprueba.libraryepisodes.LibraryItem;
 import com.sentry504.scraperprueba.libraryepisodes.LibraryItemPagination;
 import com.sentry504.scraperprueba.libraryepisodes.LibraryScraping;
-import com.sentry504.scraperprueba.releasesepisodes.ParseItem;
 
 import java.util.ArrayList;
 
@@ -94,6 +92,7 @@ public class LibraryActivity extends Fragment implements
         recyclerViewPagination = view.findViewById(R.id.recyclerViewPagination);
         lyInfoConnection = view.findViewById(R.id.lyInfoConnection);
         searchViewLibrary = view.findViewById(R.id.searchVeiwLibrary);
+        searchViewLibrary.setOnClickListener(v-> searchViewLibrary.setIconified(false));
         searchViewLibrary.clearFocus();
         searchViewLibrary.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

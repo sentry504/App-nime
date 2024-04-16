@@ -12,6 +12,7 @@ public class SeriesModel {
         this.posicion = posicion;
         this.episodes = episodes;
     }
+
     public int getEpisodes() {return episodes;}
     public String getImg() {return img;}
     public int getPosicion() {return posicion;}

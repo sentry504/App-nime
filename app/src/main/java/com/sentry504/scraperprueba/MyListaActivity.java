@@ -2,25 +2,23 @@ package com.sentry504.scraperprueba;
 
 import static android.content.Context.MODE_PRIVATE;
 
-import android.animation.Animator;
-import android.app.Dialog;
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.widget.RadioButton;
-import android.widget.Toast;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -42,35 +40,35 @@ import com.google.firebase.database.ValueEventListener;
 import com.sentry504.scraperprueba.milista.SeriesModel;
 import com.sentry504.scraperprueba.milista.adapterMyListaRecycler;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 public class MyListaActivity extends Fragment implements adapterMyListaRecycler.OnItemClickListener {
-    private static final String FILE_NAME = "listadoAnimes.txt";
-    JSONArray json = new JSONArray();
     RecyclerView rv_item;
 
     // ArrayList para almacenar las series vistas
-    private List<SeriesModel> seriesVistas = new ArrayList<>();
+    private static List<SeriesModel> seriesVistas = new ArrayList<>();
+    private static List<SeriesModel> seriesVistasOriginal = new ArrayList<>();
     private ValueEventListener valueEventListener;
     private DatabaseReference myListRef;
-    private adapterMyListaRecycler adapter;
+    private static adapterMyListaRecycler adapter;
     private InterstitialAd interstitialAd;
     public AdRequest adRequest;
     private static final String ID_INTERSTICIAL_PRUEBAS = "ca-app-pub-3940256099942544/1033173712";
     private static final String ID_INTERSTICIAL_NAVIGATION_MENU = "ca-app-pub-1883323185290636/7691438519";
 
+    private SearchView searchViewMyList;
+    private ImageView imgBtnFiltersShow;
+    private LinearLayout lyFilters;
+    private ImageButton imgBtnFilterName;
+
+    //filters
+    private SharedPreferences sharedPreferences;
+    private static boolean filterName = false;
+
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -81,10 +79,89 @@ public class MyListaActivity extends Fragment implements adapterMyListaRecycler.
         requireActivity().setTitle("Mi lista");
 
         rv_item = view.findViewById(R.id.rv_item);
+        searchViewMyList = view.findViewById(R.id.searchViewMyList);
+        lyFilters = view.findViewById(R.id.lyFilters);
+        imgBtnFiltersShow = view.findViewById(R.id.imgBtnFiltersShow);
+        imgBtnFilterName = view.findViewById(R.id.imgBtnFilterName);
 
         llenarRecycler();
 
+        sharedPreferences = requireActivity().getSharedPreferences("Filters",MODE_PRIVATE);
+
+
+        searchViewMyList.setOnClickListener(v -> searchViewMyList.setIconified(false));
+        searchViewMyList.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                filtrarPorTitular(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filtrarPorTitular(newText);
+                return false;
+            }
+        });
+
+        imgBtnFiltersShow.setOnClickListener(v->{
+            if(lyFilters.getVisibility() == View.VISIBLE){
+                lyFilters.setVisibility(View.GONE);
+            }else{
+                lyFilters.setVisibility(View.VISIBLE);
+            }
+        });
+
+        imgBtnFilterName.setOnClickListener(v->{
+            filterName = sharedPreferences.getBoolean("filterName", false);
+            ordenarPorTitular(adapter.myList, filterName);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("filterName", !filterName);
+            editor.apply();
+            adapter.notifyDataSetChanged();
+        });
+
         return view;
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public static void filtrarPorTitular(String textoBusqueda) {
+        // Si el texto de búsqueda está vacío, regresar la lista original
+        int longitude = textoBusqueda.length();
+
+        adapter.myList.clear();
+
+        if (longitude == 0) {
+            adapter.myList.addAll(seriesVistasOriginal);
+        } else {
+            String txtBuscarLowerCase = textoBusqueda.toLowerCase();
+
+            for (SeriesModel c : seriesVistasOriginal) {
+                if (c.getTitular().concat(c.getServidor()).toLowerCase().contains(txtBuscarLowerCase)) {
+                    adapter.myList.add(c);
+                }
+            }
+        }
+        ordenarPorTitular(adapter.myList,filterName);
+        adapter.notifyDataSetChanged();
+    }
+
+    public static void ordenarPorTitular(List<SeriesModel> lista, boolean ascendente) {
+        // Definir el comparador para ordenar por titular
+        Comparator<SeriesModel> comparador = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            comparador = Comparator.comparing(SeriesModel::getTitular);
+        }
+
+        // Si el orden es descendente, invertir el comparador
+        if (!ascendente) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                comparador = comparador.reversed();
+            }
+        }
+
+        // Ordenar la lista usando el comparador
+        Collections.sort(lista, comparador);
     }
 
     private void llenarRecycler() {
@@ -103,10 +180,10 @@ public class MyListaActivity extends Fragment implements adapterMyListaRecycler.
                     builder.setTitle("Eliminar");
                     builder.setCancelable(true);
                     builder.setNegativeButton("No", (dialog, which) -> {
-                        adapter.notifyDataSetChanged();
+                        adapter.notifyItemChanged(viewHolder.getBindingAdapterPosition());
                     });
                     builder.setPositiveButton("Sí", (dialog, which) -> {
-                        int position = viewHolder.getAdapterPosition();
+                        int position = viewHolder.getBindingAdapterPosition();
 
                         // Eliminar el elemento de Firebase
                         String titular = seriesVistas.get(position).getTitular();
@@ -126,6 +203,7 @@ public class MyListaActivity extends Fragment implements adapterMyListaRecycler.
         valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                seriesVistasOriginal.clear();
                 seriesVistas.clear();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -145,6 +223,7 @@ public class MyListaActivity extends Fragment implements adapterMyListaRecycler.
                     );
                     seriesVistas.add(serie);
                 }
+                seriesVistasOriginal.addAll(seriesVistas);
                 adapter = new adapterMyListaRecycler(seriesVistas);
                 adapter.setOnItemCLickListener(MyListaActivity.this);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(context);
@@ -178,36 +257,8 @@ public class MyListaActivity extends Fragment implements adapterMyListaRecycler.
         }
     }
 
-    public JSONArray readListFile(String file_name) {
-        JSONArray retorno = new JSONArray();
-        try {
-            //Lectura del archivo, procesamiento para conversion a texto
-            InputStreamReader inputStreamReader = new InputStreamReader(requireActivity().openFileInput(file_name));
-            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-            String linea = bufferedReader.readLine();
-            StringBuilder contenido = new StringBuilder();
-            while (linea != null){
-                contenido.append(linea).append("\n");
-                linea = bufferedReader.readLine();
-            }
-            bufferedReader.close();
-            inputStreamReader.close();
-
-            //Conversion del contenido del archivo settings.txt a objeto json
-            retorno = new JSONArray(contenido.toString());
-
-        } catch (JSONException | IOException e) {
-            e.printStackTrace();
-        }
-        return retorno;
-    }
-
     @Override
     public void OnItemClick(View view, int position) {
-        File archivo = new File(requireActivity().getFilesDir(),"listadoAnimes.txt");
-        if (archivo.exists() && !archivo.isDirectory()) {
-            json = readListFile(FILE_NAME);
-        }
         loadAd(ID_INTERSTICIAL_PRUEBAS);
         Intent i = new Intent(getActivity(), ReproductorActivity.class);
         i.putExtra("title", seriesVistas.get(position).getTitular());
